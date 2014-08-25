@@ -1,0 +1,20 @@
+﻿<div class="row" data-ng-controller="LoginController">
+    <div class="span4 offset4">
+        <div class="well">
+            <legend>Log in to Time Tracker &trade;</legend>
+            <form method="POST" accept-charset="UTF-8" data-ng-submit="login()">
+                <div class="alert alert-error" ng-show="hasError">
+                    {{ status }}
+                </div>
+                <input class="span3" placeholder="Username" type="text" name="username" data-ng-model="account.username" required>
+                <input class="span3" placeholder="Password" type="password" name="password" data-ng-model="account.password" required>
+                <label class="checkbox">
+                    <input type="checkbox" name="remember" value="1">
+                    Remember Me
+                </label>
+                <button class="btn-info btn" type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+    

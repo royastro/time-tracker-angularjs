@@ -1,0 +1,125 @@
+﻿<div data-ng-show="isLoggedIn">
+    <div ng-include src="'/partials/header.html'"></div>
+    <div>
+        <div class="container">
+            <header>
+                <h4>Time Entries</h4>
+            </header>
+            <div>
+                <!--Start Add Task Button and Date Filter -->
+                <div class="row">
+                    <div class="span6">
+                        <form class="form-horizontal no-margin-bottom" data-ng-submit="addTask()">
+                            <input type="text" class="input-add-task" data-ng-model="selectedTask" typeahead="task for task in taskLookup | filter:$viewValue | limitTo:10" required>
+                            <button type="submit" class="btn btn-primary">Add Task</button>
+                        </form>
+                    </div>
+                    <div class="span6 text-right">
+                        <div class="form-horizontal">
+                            <input type="text" datepicker-popup="dd-MMMM-yyyy" data-ng-model="dt" is-open="opened" ng-change="onDateChanged()" max="'2015-06-22'" datepicker-options="dateOptions" ng-required="true" disabled />
+                            <button class="btn" data-ng-click="open()"><i class="icon-calendar"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <!--End Add Task Button and Date Filter -->
+                <br />
+                <div class="row" data-ng-show="hasError">
+                    <div class="span12">
+                        <div class="alert alert-error">
+                            <strong>Error!</strong> {{ status }}
+                        </div>
+                    </div>
+                </div>
+                <!-- Start Entry Table -->
+                <div class="row">
+                    <div class="span12">
+                        <table class="table table-hover table-striped table-condensed table-bordered entriesTable">
+                            <thead>
+                                <tr>
+                                    <th class="entry-control-column"></th>
+                                    <th class="entry-column entry-task-column span4">Task</th>
+                                    <th class="entry-column entry-column-dates span1" data-ng-repeat="column in gridColumns">
+                                        <div class="text-center">
+                                            {{column.Date | date: 'dd-MMM-yy'}}<br />{{ column.Day }}
+                                        </div>
+                                    </th>
+                                    <th class="span1 entry-column">
+                                        <div class="text-center">
+                                            Total
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="task in gridData | filter:{IsTotal:false}">
+                                    <td><button class="btn btn-mini" data-ng-click="deleteTask(task.Id)">Delete</button></td>
+                                    <td>
+                                        {{task.Task.Name}}
+                                    </td>
+                                    <td class="entry-cell" data-ng-click="editEntry(task.Id, entry.Id, entry.EntryDate, entry.Hours, entry.Notes)" data-ng-repeat="entry in task.Entries">
+                                        <div class="text-center" popover="{{entry.Notes}}" popover-title="Notes" popover-trigger="mouseenter" popover-placement="bottom">
+                                            {{entry.Hours}}
+                                        </div>
+                                    </td>
+                                    <td class="bold">
+                                        <div class="text-center">
+                                            {{task.TotalHours}}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="info" data-ng-repeat="task in gridData | filter: {IsTotal: true}">
+                                    <td></td>
+                                    <td><b>Total</b></td>
+                                    <td class="entry-cell-totals" data-ng-repeat="total in task.Entries">
+                                        <div class="text-center">
+                                            {{total.Hours}}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- End Entry Table -->
+                <!-- Start Entry Popup Window -->
+                <div>
+                    <script type="text/ng-template" id="myModalContent.html">
+                        <div class="modal-header">
+                            <h3>Time Entry</h3>
+                        </div>
+                        <form class="form-horizontal" ng-submit="save()">
+                            <div class="modal-body">
+                                <div>
+                                    <div class="control-group">
+                                        <label class="control-label" for="inputHours">Date</label>
+                                        <div class="controls">
+                                            <input type="text" id="inputEntryDate" value="{{selectedEntry.EntryDate | date:'dd-MMM-yy'}}" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" for="inputHours">Hours</label>
+                                        <div class="controls">
+                                            <input type="number" id="inputHours" min="0" max="24" step="0.5" data-ng-model="selectedEntry.Hours" required />
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" for="inputNotes">Notes</label>
+                                        <div class="controls">
+                                            <textarea id="inputNotes" rows="7" style="width:315px" cols="50" ng-model="selectedEntry.Notes" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button class="btn btn-warning" data-ng-click="cancel()">Cancel</button>
+                            </div>
+                        </form>
+                    </script>
+                </div>
+                <!-- End Entry Popup Window -->
+            </div>
+        </div>
+    </div>
+    <div data-ng-include src="'/partials/footer.html'"></div>
+</div>
